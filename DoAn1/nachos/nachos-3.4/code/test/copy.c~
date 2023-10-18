@@ -1,0 +1,49 @@
+#include "MyUtility.h"
+
+int main()
+{
+	char fileName[32];
+	int readByte = 0;
+	int writeByte = 0;
+	OpenFileId idSource, idDes;
+	char buffer[100];
+
+	print("------------------Copy program------------------\n");
+	print("Warning: the program will delete the destination file if it exists and create new\n\n");
+	print("File source name: ");
+	Read(fileName, 32, ConsoleInput);
+	idSource = Open(fileName, 1);
+	if(idSource == -1)
+	{
+		return;
+	}
+
+	print("\nFile Destination Name: ");
+	Read(fileName, 32, ConsoleInput);
+
+	print("\n");
+	Delete(fileName);
+
+
+	if(Create(fileName) == -1)
+	{
+		print("Cannot create file\n");
+		print("Make sure that the fileDestination was different from fileSource\n");
+		return -1;
+	}
+	
+	idDes = Open(fileName, 0);
+	print("Copying...\n");
+	while(1)
+	{
+		readByte = Read(buffer, 100, idSource);
+		if(readByte == -1 || readByte == -2) // errors or end of file
+			break;
+
+		writeByte = Write(buffer, readByte, idDes);
+	}
+	if(readByte != -1)
+		print("\nFinish copying");
+	Close(idSource);
+	Close(idDes);
+}
